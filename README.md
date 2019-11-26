@@ -9,3 +9,5 @@ Das Projekt zur Lehrveranstaltung IEG (Integration elektronischer Geschäftsproz
 - Start consul using command:
 >switch with CMD-Line to consul directory
 >./consul.exe agent -dev -enable-script-checks -config-dir=./config
+
+Consul is reachable at port 8500 (http://localhost:8500)
