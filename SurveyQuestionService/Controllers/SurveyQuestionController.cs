@@ -25,7 +25,14 @@ namespace SurveyQuestionService.Controllers
         {   
             _logger = logger;
         }
+        
 
+        [HttpGet ]
+        [Route("health")]
+        public ActionResult GetHealthState()
+        {
+            return Ok();
+        }
 
         [HttpGet]
         public ActionResult Get()
