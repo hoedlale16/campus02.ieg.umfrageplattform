@@ -7,4 +7,5 @@ Das Projekt zur Lehrveranstaltung IEG (Integration elektronischer Geschäftsproz
 - consul.exe must be stored in consul-directory 
 - Required configuration for consul is located in directory consul/config
 - Start consul using command:
->consul agent -dev -enable-script-checks -config-dir=./config
+>switch with CMD-Line to consul directory
+>./consul.exe agent -dev -enable-script-checks -config-dir=./config
