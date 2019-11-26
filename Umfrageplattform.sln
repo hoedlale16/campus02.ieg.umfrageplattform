@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyCollectorService", "SurveyCollectorService\SurveyCollectorService.csproj", "{8504D6EB-36B1-42D7-9B3D-DB8CD8FA3C11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyFormService", "SurveyFormService\SurveyFormService.csproj", "{23E3FE83-79DE-420D-B09F-6C354994FB19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyProcessorService", "SurveyProcessorService\SurveyProcessorService.csproj", "{845DF82F-1C1D-498C-AC50-5B4A56BA9F2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyMISCService", "SurveyMISCService\SurveyMISCService.csproj", "{1876BDE4-B27C-4E2D-AC35-7B540810B0AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyFormService", "SurveyFormService\SurveyFormService.csproj", "{23E3FE83-79DE-420D-B09F-6C354994FB19}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyWebHookService", "SurveyWebHookService\SurveyWebHookService.csproj", "{E13C0CF9-B327-4B40-8085-A30ACB88EB98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyQuestionService", "SurveyQuestionService\SurveyQuestionService.csproj", "{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8504D6EB-36B1-42D7-9B3D-DB8CD8FA3C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8504D6EB-36B1-42D7-9B3D-DB8CD8FA3C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8504D6EB-36B1-42D7-9B3D-DB8CD8FA3C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8504D6EB-36B1-42D7-9B3D-DB8CD8FA3C11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{845DF82F-1C1D-498C-AC50-5B4A56BA9F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{845DF82F-1C1D-498C-AC50-5B4A56BA9F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{845DF82F-1C1D-498C-AC50-5B4A56BA9F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{845DF82F-1C1D-498C-AC50-5B4A56BA9F2B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23E3FE83-79DE-420D-B09F-6C354994FB19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23E3FE83-79DE-420D-B09F-6C354994FB19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23E3FE83-79DE-420D-B09F-6C354994FB19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23E3FE83-79DE-420D-B09F-6C354994FB19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E13C0CF9-B327-4B40-8085-A30ACB88EB98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E13C0CF9-B327-4B40-8085-A30ACB88EB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E13C0CF9-B327-4B40-8085-A30ACB88EB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E13C0CF9-B327-4B40-8085-A30ACB88EB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1876BDE4-B27C-4E2D-AC35-7B540810B0AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1876BDE4-B27C-4E2D-AC35-7B540810B0AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1876BDE4-B27C-4E2D-AC35-7B540810B0AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1876BDE4-B27C-4E2D-AC35-7B540810B0AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
