@@ -54,7 +54,6 @@ namespace SurveyMISCService.Controllers
             {
                 _client.DefaultRequestHeaders.Accept.Clear();
                 var filterPassing = "/v1/health/state/passing?filter=ServiceID==";
-                //http://127.0.0.1:8500/v1/health/state/passing?filter=ServiceID==SurveyQuestionService
                 HttpResponseMessage response = await _client.GetAsync(_consulURL + filterPassing + serviceID);
                 if (response.IsSuccessStatusCode)
                 {

@@ -43,45 +43,46 @@ namespace SurveyFormService.Controllers
         [HttpPost]
         public ActionResult Post(string surveyName, int numOfQuestions)
         {
-            SurveyForm NewSurvey = new SurveyForm
-            {
-                SurveyName = surveyName
-            };
-            //Liste von verfügbaren Fragen.
-            List<SurveyQuestion> availableQuestions = new List<SurveyQuestion>();
-
-
             //Aufrufen des MISC Service um URLs für maximal verfügbare Fragenanzahl zu erhalten. 
-            //Das MISCService liefert die verfügbaren URLs des SurveyQuestionServices
-            string surveyQuestionServiceURL = GetFirstSurveyQuestionServiceURLs();
+            //Das MISCService liefert dazu die verfügbaren URLs des SurveyQuestionServices
+            List<SurveyQuestion> availableQuestions = new List<SurveyQuestion>();
+            string surveyQuestionServiceURL = GetFirstSurveyQuestionServiceURL();
             if (surveyQuestionServiceURL != null)
             {
-                //Wir nehmen immer die erste funktionierende und fragen die verfügbaren Fragen ab
-                //Die zurückgelieferte Summe an Fragen ist die maxNrOfQuestions
+                //Wir nehmen immer die erste funktionierende URL und fragen dort den 
+                //verfügbaren Fragenpool ab. Die zurückgelieferte Summe an Fragen ist 
+                //die maximale Fragenanzahl
                 availableQuestions = GetAvailableQuestions(surveyQuestionServiceURL);
             }
 
-            //Check ob Fragen vorhanden sind 
+            //Check ob Fragen im Pool vorhanden sind.
             if(availableQuestions == null || availableQuestions.Count <= 0)
             {
                 return BadRequest();
             }
 
-            //Fragen vorhandne: Wenn vorhandene Fragen < als Geforderte müssen diese reduziert werden
+            //Fragen vorhanden: Wenn vorhandene Fragen < als Geforderte müssen diese reduziert werden
             if (availableQuestions.Count < numOfQuestions)
             {
                 numOfQuestions = availableQuestions.Count;
                 _logger.LogError($"Not enough questions available - Must reduce them to  <" + numOfQuestions + ">");
             }
 
-            //Umfrage erstellen
+            //Fragen für Umfragen erstellen:
             Dictionary<int, bool> surveyQuestions = new Dictionary<int, bool>();
             for (int i = 0; i < numOfQuestions; i ++)
             {
                 SurveyQuestion q = availableQuestions.ElementAt(i);
                 surveyQuestions.Add(q.QuestionID, true);
             }
-            NewSurvey.QuestionAnswers = surveyQuestions;
+
+            //Umfrage erstellen
+            SurveyForm NewSurvey = new SurveyForm
+            {
+                SurveyName = surveyName,
+                QuestionAnswers = surveyQuestions
+            };
+            
             _logger.LogError($"Creates a new survey <" + NewSurvey.SurveyName + ">with <" + NewSurvey.QuestionAnswers.Count + "> questions");
 
 
@@ -116,7 +117,7 @@ namespace SurveyFormService.Controllers
         /**
          * A3 - Einsatz eines KonfigurationsServices (MISC) um Adressen von Services zu Verwalten
          */
-        private string GetFirstSurveyQuestionServiceURLs()
+        private string GetFirstSurveyQuestionServiceURL()
         {
             try { 
                 HttpClient client = new HttpClient();
