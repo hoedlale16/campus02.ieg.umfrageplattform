@@ -6,12 +6,14 @@
      "checks": [
        {
         "id": "SurveyQuestion01",
+        "name": "https://localhost:44382/api/SurveyQuestion",
         "http": "https://localhost:44382/api/SurveyQuestion/health",
         "interval": "15s",
         "timeout": "20s"
        },
        {
         "id": "SurveyQuestion02",
+        "name": "https://localhost:44383/api/SurveyQuestion",
         "http": "https://localhost:44383/api/SurveyQuestion/health",
         "interval": "15s",
         "timeout": "20s"
