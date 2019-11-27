@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,6 @@ namespace SurveyQuestionService.Controllers
     [FormatFilter]
     public class SurveyQuestionController : ControllerBase
     {
-
-        
 
         private ILogger<SurveyQuestionController> _logger;
         public SurveyQuestionController(ILogger<SurveyQuestionController> logger)
@@ -41,9 +40,7 @@ namespace SurveyQuestionService.Controllers
 
             _questions.Add(new SurveyQuestion(1, "Is this product cool?", true));
             _questions.Add(new SurveyQuestion(2, "Is this product ugly?", false));
-
-            var json = JsonConvert.SerializeObject(_questions);
-            return Ok(json);
+            return Ok(_questions);
         }
 
         // POST api/values

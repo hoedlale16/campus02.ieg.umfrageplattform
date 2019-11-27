@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +17,10 @@ namespace SurveyFormService.Controllers
     [FormatFilter]
     public class SurveyFormController : ControllerBase
     {
-        private ILogger<SurveyFormController> _logger;
+        //Single Point of Failure. Wenn CONSUL nicht erreichbar ist alles aus.
+        private static readonly string _surveyMiscServiceURL = "https://localhost:44332/api/SurveyMISC";
+
+        private readonly ILogger<SurveyFormController> _logger;
         public SurveyFormController(ILogger<SurveyFormController> logger)
         {
             _logger = logger;
@@ -36,37 +41,103 @@ namespace SurveyFormService.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post(string SurveyName, int NumOfQuestions)
+        public ActionResult Post(string surveyName, int numOfQuestions)
         {
             SurveyForm NewSurvey = new SurveyForm
             {
-                SurveyName = SurveyName
+                SurveyName = surveyName
             };
-
-            //TODO Aufrufen des MISC Service um Fragen abzuholen. 
-
-
-            int MaxNrOfQuestions = NumOfQuestions;
-            _logger.LogError($"Creates a new survey <" + SurveyName+ ">with <" + MaxNrOfQuestions + "> questions");
+            //Liste von verfügbaren Fragen.
+            List<SurveyQuestion> availableQuestions = new List<SurveyQuestion>();
 
 
+            //Aufrufen des MISC Service um URLs für maximal verfügbare Fragenanzahl zu erhalten. 
+            //Das MISCService liefert die verfügbaren URLs des SurveyQuestionServices
+            string surveyQuestionServiceURL = GetFirstSurveyQuestionServiceURLs();
+            if (surveyQuestionServiceURL != null)
+            {
+                //Wir nehmen immer die erste funktionierende und fragen die verfügbaren Fragen ab
+                //Die zurückgelieferte Summe an Fragen ist die maxNrOfQuestions
+                availableQuestions = GetAvailableQuestions(surveyQuestionServiceURL);
+            }
+
+            //Check ob Fragen vorhanden sind 
+            if(availableQuestions == null || availableQuestions.Count <= 0)
+            {
+                return BadRequest();
+            }
+
+            //Fragen vorhandne: Wenn vorhandene Fragen < als Geforderte müssen diese reduziert werden
+            if (availableQuestions.Count < numOfQuestions)
+            {
+                numOfQuestions = availableQuestions.Count;
+                _logger.LogError($"Not enough questions available - Must reduce them to  <" + numOfQuestions + ">");
+            }
+
+            //Umfrage erstellen
+            Dictionary<int, bool> surveyQuestions = new Dictionary<int, bool>();
+            for (int i = 0; i < numOfQuestions; i ++)
+            {
+                SurveyQuestion q = availableQuestions.ElementAt(i);
+                surveyQuestions.Add(q.QuestionID, true);
+            }
+            NewSurvey.QuestionAnswers = surveyQuestions;
+            _logger.LogError($"Creates a new survey <" + NewSurvey.SurveyName + ">with <" + NewSurvey.QuestionAnswers.Count + "> questions");
+
+
+            //Sollte eigtl Created zurückliefern, kennt C# aber irgendwie nicht...
+            return Ok(JsonConvert.SerializeObject(NewSurvey));
         }
 
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] SurveyForm survey)
+        private List<SurveyQuestion> GetAvailableQuestions(String surveyQuestionServiceURL)
         {
-            _logger.LogError($"TODO Creates a survey");
-            //TODO Aufrufen des MISC Service um überpfüen ob die Fragen gibt 
+            
+            List<SurveyQuestion> availableQuestions = new List<SurveyQuestion>();
+            try
+            {
+                HttpClient client = new HttpClient();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            HttpResponseMessage response = client.GetAsync(surveyQuestionServiceURL).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    availableQuestions = response.Content.ReadAsAsync<List<SurveyQuestion>>().Result;
+                }
+            }catch (Exception e)
+            {
+                _logger.LogError("Error(" + e.Message + ") while retrieving questions from  <" + surveyQuestionServiceURL + ">");
+            } 
+
+
+            return availableQuestions;
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int surveyID)
+        /**
+         * A3 - Einsatz eines KonfigurationsServices (MISC) um Adressen von Services zu Verwalten
+         */
+        private string GetFirstSurveyQuestionServiceURLs()
         {
-            _logger.LogError($"TODO remove survey");
+            try { 
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = client.GetAsync(_surveyMiscServiceURL + "/SurveyQuestionService").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    List<string> acceptedSurveyQuestionServiceURLs = response.Content.ReadAsAsync<List<string>>().Result;
+
+
+                    if (acceptedSurveyQuestionServiceURLs != null && 
+                        acceptedSurveyQuestionServiceURLs.Count > 0)
+                    {
+                        return acceptedSurveyQuestionServiceURLs[0];
+                    }
+                }
+            } catch (Exception e)
+            {
+                _logger.LogError("Error(" + e.Message + ") while get surveyQuestionURL");
+            }
+
+            return null ;
         }
     }
 }

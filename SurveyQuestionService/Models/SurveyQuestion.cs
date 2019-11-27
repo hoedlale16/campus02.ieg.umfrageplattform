@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,5 +22,14 @@ namespace SurveyQuestionService.Models
             this.Question = question;
             this.Answer = answer;
         }
+
+        public SurveyQuestion(String json)
+        {
+            JObject jObject = JObject.Parse(json);
+            QuestionID = (int)jObject["QuestionID"];
+            Question = (string)jObject["Question"];
+            Answer = (bool)jObject["Answer"];
+        }
+
     }
 }
