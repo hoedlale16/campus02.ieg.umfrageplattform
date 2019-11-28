@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SurveyMISCService.Model;
+using SurveyMISCService.Models;
 
 namespace SurveyMISCService.Controllers
 {
@@ -23,6 +24,15 @@ namespace SurveyMISCService.Controllers
         {
             _logger = logger;
         }
+
+        [HttpPost]
+        [Route("log")]
+        public ActionResult PostWriteLog([FromBody] LogEntry logEntry)
+        {
+            _logger.LogError(logEntry.ServiceID + ": " + logEntry.LogText);
+            return Ok();
+        }
+
 
         [HttpGet]
         [Route("health")]
@@ -66,6 +76,10 @@ namespace SurveyMISCService.Controllers
                             urls.Add(state.Name);
                         }
                     }
+                }
+                else
+                {
+                    _logger.LogError("CONSUL not reachable - unable to determine any URLs");
                 }
             }
             catch (HttpRequestException ex)

@@ -6,97 +6,142 @@
 	},
 	"item": [
 		{
-			"name": "Get available Questions (SurveyQuestionService)",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://localhost:44382/api/SurveyQuestion",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "44382",
-					"path": [
-						"api",
-						"SurveyQuestion"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetPassingServices (Consul direct)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8500/v1/health/state/passing?filter=ServiceID==SurveyQuestionService",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8500",
-					"path": [
-						"v1",
-						"health",
-						"state",
-						"passing"
-					],
-					"query": [
-						{
-							"key": "filter",
-							"value": "ServiceID==SurveyQuestionService"
+			"name": "Implementierung I – Discovery & Configuration",
+			"item": [
+				{
+					"name": "Get available Questions (SurveyQuestionService)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:44382/api/SurveyQuestion",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44382",
+							"path": [
+								"api",
+								"SurveyQuestion"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Call SurveyMiscService (SurveyQuestionService)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "https://localhost:44332/api/SurveyMISC/SurveyQuestionService",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "44332",
-					"path": [
-						"api",
-						"SurveyMISC",
-						"SurveyQuestionService"
-					]
+				{
+					"name": "GetPassingServices (Consul direct)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8500/v1/health/state/passing?filter=ServiceID==SurveyQuestionService",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8500",
+							"path": [
+								"v1",
+								"health",
+								"state",
+								"passing"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "ServiceID==SurveyQuestionService"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get URLs of SurveyQuestionService (SurveyMiscService)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:44332/api/SurveyMISC/SurveyQuestionService",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"api",
+								"SurveyMISC",
+								"SurveyQuestionService"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create random Survey (SurveyFormService)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:59434/api/SurveyForm?surveyName=Testumfrage&numOfQuestions=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "59434",
+							"path": [
+								"api",
+								"SurveyForm"
+							],
+							"query": [
+								{
+									"key": "surveyName",
+									"value": "Testumfrage"
+								},
+								{
+									"key": "numOfQuestions",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Create random Survey (SurveyFormService)",
+			"name": "Write Log (SurveyMiscService",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -108,28 +153,19 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Product\": \"Se Product\",\n    \"Vendor\": \"Da Herstölla\",\n    \"CustomerCreditCardnumber\": \"1234 5678 9012\",\n    \"AmountInEuro\": \"13,37\"\n}"
+					"raw": "{\n    \"ServiceID\": \"TestCall\",\n    \"LogText\": \"Das ist ein TestCall\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:59434/api/SurveyForm?surveyName=Testumfrage&numOfQuestions=2",
-					"protocol": "http",
+					"raw": "https://localhost:44332/api/SurveyMISC/log",
+					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "59434",
+					"port": "44332",
 					"path": [
 						"api",
-						"SurveyForm"
-					],
-					"query": [
-						{
-							"key": "surveyName",
-							"value": "Testumfrage"
-						},
-						{
-							"key": "numOfQuestions",
-							"value": "2"
-						}
+						"SurveyMISC",
+						"log"
 					]
 				}
 			},

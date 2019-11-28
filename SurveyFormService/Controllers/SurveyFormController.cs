@@ -20,12 +20,6 @@ namespace SurveyFormService.Controllers
         //Single Point of Failure. Wenn CONSUL nicht erreichbar ist alles aus.
         private static readonly string _surveyMiscServiceURL = "https://localhost:44332/api/SurveyMISC";
 
-        private readonly ILogger<SurveyFormController> _logger;
-        public SurveyFormController(ILogger<SurveyFormController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpGet]
         public ActionResult Get()
         {
@@ -58,6 +52,7 @@ namespace SurveyFormService.Controllers
             //Check ob Fragen im Pool vorhanden sind.
             if(availableQuestions == null || availableQuestions.Count <= 0)
             {
+                WriteLog("Received no available questions from surveyQuestionService - Maybe down or no questions in pool?");
                 return BadRequest();
             }
 
@@ -65,7 +60,7 @@ namespace SurveyFormService.Controllers
             if (availableQuestions.Count < numOfQuestions)
             {
                 numOfQuestions = availableQuestions.Count;
-                _logger.LogError($"Not enough questions available - Must reduce them to  <" + numOfQuestions + ">");
+                WriteLog($"Not enough questions available - Must reduce them to  <" + numOfQuestions + ">");
             }
 
             //Fragen für Umfragen erstellen:
@@ -82,8 +77,8 @@ namespace SurveyFormService.Controllers
                 SurveyName = surveyName,
                 QuestionAnswers = surveyQuestions
             };
-            
-            _logger.LogError($"Creates a new survey <" + NewSurvey.SurveyName + ">with <" + NewSurvey.QuestionAnswers.Count + "> questions");
+
+            WriteLog($"Creates a new survey <" + NewSurvey.SurveyName + ">with <" + NewSurvey.QuestionAnswers.Count + "> questions");
 
 
             //Sollte eigtl Created zurückliefern, kennt C# aber irgendwie nicht...
@@ -95,9 +90,10 @@ namespace SurveyFormService.Controllers
         {
             
             List<SurveyQuestion> availableQuestions = new List<SurveyQuestion>();
+            HttpClient client = new HttpClient();
             try
             {
-                HttpClient client = new HttpClient();
+                
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpResponseMessage response = client.GetAsync(surveyQuestionServiceURL).Result;
@@ -107,9 +103,8 @@ namespace SurveyFormService.Controllers
                 }
             }catch (Exception e)
             {
-                _logger.LogError("Error(" + e.Message + ") while retrieving questions from  <" + surveyQuestionServiceURL + ">");
+                WriteLog("Error(" + e.Message + ") while retrieving questions from  <" + surveyQuestionServiceURL + ">");
             } 
-
 
             return availableQuestions;
         }
@@ -133,12 +128,31 @@ namespace SurveyFormService.Controllers
                         return acceptedSurveyQuestionServiceURLs[0];
                     }
                 }
-            } catch (Exception e)
-            {
-                _logger.LogError("Error(" + e.Message + ") while get surveyQuestionURL");
-            }
+                } catch (Exception e)
+                {
+                    WriteLog("Error(" + e.Message + ") while get surveyQuestionURL");
+                }
 
             return null ;
         }
+
+        private async void WriteLog(string log)
+        {
+            //Call SurveyMiscService as central log service to write log
+            try
+            {
+                HttpClient client = new HttpClient();
+                await client.PostAsJsonAsync(_surveyMiscServiceURL + "/log", new LogEntry {
+                    ServiceID = "SurveyFormController",
+                    LogText = log
+                });
+            }
+            catch (Exception e)
+            {
+                //Nobody cares about an execption while writing a log...
+            }
+        }
     }
+
+    
 }
