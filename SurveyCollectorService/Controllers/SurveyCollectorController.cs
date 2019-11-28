@@ -14,14 +14,8 @@ namespace SurveyCollectorService.Controllers
     [FormatFilter]
     public class SurveyCollectorController : ControllerBase
     {
-        private ILogger<SurveyCollectorController> _logger;
         private static readonly HttpClient _client = new HttpClient();
         private static string _consulURL = "http://localhost:8500";
-        public SurveyCollectorController(ILogger<SurveyCollectorController> logger)
-        {
-            _logger = logger;
-        }
-
 
         [HttpGet]
         public ActionResult Get()
@@ -67,7 +61,7 @@ namespace SurveyCollectorService.Controllers
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError("An error occurred connecting to Consul");
+                WriteLog("An error occurred connecting to Consul");
             }
 
             //Fallback return empty list
@@ -95,11 +89,29 @@ namespace SurveyCollectorService.Controllers
             catch (HttpRequestException ex)
             {
                 result = "Mäh";
-                _logger.LogError("An error occurred connecting to Consul");
+                WriteLog("An error occurred connecting to Consul");
             }
 
             //Fallback return empty list
             return result;
+        }
+
+        private async void WriteLog(string log)
+        {
+            //Call SurveyMiscService as central log service to write log
+            try
+            {
+                HttpClient client = new HttpClient();
+                await client.PostAsJsonAsync("https://localhost:44332/api/SurveyMISC/log", new LogEntry
+                {
+                    ServiceID = "SurveyFormController",
+                    LogText = log
+                });
+            }
+            catch (Exception e)
+            {
+                //Nobody cares about an execption while writing a log...
+            }
         }
     }
 }

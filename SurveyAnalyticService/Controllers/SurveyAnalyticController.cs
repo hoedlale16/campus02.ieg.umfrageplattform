@@ -15,14 +15,6 @@ namespace SurveyAnalyticService.Controllers
     [FormatFilter]
     public class SurveyAnalyticController : ControllerBase
     {
-
-        private ILogger<SurveyAnalyticController> _logger;
-        public SurveyAnalyticController(ILogger<SurveyAnalyticController> logger)
-        {
-            _logger = logger;
-        }
-
-
         [HttpGet]
         public ActionResult Get()
         {
@@ -36,9 +28,27 @@ namespace SurveyAnalyticService.Controllers
 
             var credentiaaaaals = new SurveyCredentials(values);
 
-           _logger.LogError(credentiaaaaals.User);
-           _logger.LogError(credentiaaaaals.Password);
+            WriteLog(credentiaaaaals.User);
+            WriteLog(credentiaaaaals.Password);
             return Ok();
+        }
+
+        private async void WriteLog(string log)
+        {
+            //Call SurveyMiscService as central log service to write log
+            try
+            {
+                HttpClient client = new HttpClient();
+                await client.PostAsJsonAsync("https://localhost:44332/api/SurveyMISC/log", new LogEntry
+                {
+                    ServiceID = "SurveyFormController",
+                    LogText = log
+                });
+            }
+            catch (Exception e)
+            {
+                //Nobody cares about an execption while writing a log...
+            }
         }
     }
 }
