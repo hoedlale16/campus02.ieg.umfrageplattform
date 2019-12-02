@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyCollectorService", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyAnalyticService", "SurveyAnalyticService\SurveyAnalyticService.csproj", "{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookService", "WebhookService\WebhookService.csproj", "{74865C10-FE00-4E47-B646-AF2C3A9A77BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

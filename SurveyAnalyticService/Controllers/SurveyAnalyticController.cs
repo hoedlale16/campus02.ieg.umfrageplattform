@@ -48,6 +48,7 @@ namespace SurveyAnalyticService.Controllers
             catch (Exception e)
             {
                 //Nobody cares about an execption while writing a log...
+                // --> da wird die Exception aber traurig sein 😟🐐
             }
         }
     }
