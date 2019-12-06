@@ -34,31 +34,32 @@ namespace WebhookService.Controllers
         }
 
 
-        private Webhook CreateWebhook(string name, bool active, List<string> events, WebhookConfig config)
+        public Webhook CreateWebhook(string name, bool active, ArrayList events, WebhookConfig config)
         {
             return new Webhook(name, active, events, config);
         }
 
-        private void RegisterWebhooks(List<Webhook> webhooks)
+        public void RegisterWebhooks(Webhook webhook)
         {
-            foreach (Webhook webhook in webhooks)
-            {
-                string jsonWebhook = ConvertToJsonString(webhook);
-                string responseBody = SendRequest(jsonWebhook);
+            string jsonWebhook = ConvertToJsonString(webhook);
+            string responseBody = SendRequest(jsonWebhook);
 
-                if (responseBody == null)
-                {
-                    //TODO log error                    
-                }else {}//TODO log success
+            if (responseBody == null)
+            {
+                //TODO log error                    
             }
+            else
+            {
+            } //TODO log success
         }
 
         private string ConvertToJsonString(Webhook webhook)
         {
-            return JsonConvert.SerializeObject(webhook);
+            string result = JsonConvert.SerializeObject(webhook);
+            return result;
         }
 
-        
+
         private string SendRequest(string content)
         {
             // build request body
@@ -79,14 +80,13 @@ namespace WebhookService.Controllers
             var responseStream = httpResponse.GetResponseStream();
 
             // read response body
-            if (status == HttpStatusCode.Accepted && responseStream!=null)
+            if (status == HttpStatusCode.OK && responseStream != null)
             {
                 var streamReader = new StreamReader(responseStream);
                 return streamReader.ReadToEnd();
             }
 
             return null;
-
         }
     }
 }

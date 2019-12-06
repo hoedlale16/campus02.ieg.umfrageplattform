@@ -1,18 +1,25 @@
-using System.Collections.Generic;
+using SurveyAnalyticService.Models;
 
-namespace SurveyAnalyticService.Models
+namespace WebhookService
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using WebhookService;
+
+
     public class Webhook
     {
-        private string name { get; set; }
+        public string name { get; set; }
 
-        private bool active { get; set; }
+        public bool active { get; set; }
 
-        private List<string> events { get; set; }
+        public ArrayList events { get; set; }
 
-        private WebhookConfig config { get; set; }
+        public WebhookConfig config { get; set; }
 
-        public Webhook(string name, bool active, List<string> events, WebhookConfig config)
+
+        public Webhook(string name, bool active, ArrayList events, WebhookConfig config)
         {
             this.name = name;
             this.active = active;
