@@ -28,8 +28,20 @@ namespace SurveyCollectorService.Controllers
 
             if (_credentials != null)
             {
+                // Call Analytics with credentials
                 result = GetAnalytic(_credentials).Result;
-                return Ok(result);
+
+                if (result.Equals("OK")) {
+                    return Ok("Authenticated");
+                }
+
+                if (result.Equals("BAD REQUEST"))
+                {
+                    return BadRequest("Not authenticated");
+                }
+
+
+                //return Ok(result);
             }
 
             return BadRequest();
@@ -38,12 +50,13 @@ namespace SurveyCollectorService.Controllers
         private async Task<string> GetCredentials()
         {
             String credentials = null;
-            String encoded = null;
+
+            // Get credentials from Consul
             try
             {
                 _client.DefaultRequestHeaders.Accept.Clear();
                 var filterPassing = "/v1/kv/User";
-                //http://127.0.0.1:8500/v1/kv/User
+                // URL: http://127.0.0.1:8500/v1/kv/User
                 HttpResponseMessage response = await _client.GetAsync(_consulURL + filterPassing);
                 if (response.IsSuccessStatusCode)
                 {
@@ -53,8 +66,7 @@ namespace SurveyCollectorService.Controllers
                         if (state.Value != null)
                         {
                             byte[] data = System.Convert.FromBase64String(state.Value);
-                            encoded = System.Text.ASCIIEncoding.ASCII.GetString(data);
-                            credentials = encoded;
+                            credentials = System.Text.ASCIIEncoding.ASCII.GetString(data);
                         }
                     }
                 }
@@ -77,18 +89,21 @@ namespace SurveyCollectorService.Controllers
 
                 _client.DefaultRequestHeaders.Accept.Clear();
                 _client.DefaultRequestHeaders.Add("Credentials", credentials);
-                //var filterPassing = "/v1/kv/User";
-                //http://127.0.0.1:8500/v1/kv/User
+
                 HttpResponseMessage response = await _client.GetAsync("https://localhost:44329/api/SurveyAnalytic");
                 if (response.IsSuccessStatusCode)
                 {
-                    result = response.Content.ReadAsStringAsync().Result;
+                    //result = response.Content.ReadAsStringAsync().Result;
+                    result = "OK";
+                } else
+                {
+                    result = "BAD REQUEST";
                 }
 
             }
             catch (HttpRequestException ex)
             {
-                result = "Mäh";
+                result = "ERROR!";
                 WriteLog("An error occurred connecting to Consul");
             }
 

@@ -15,6 +15,10 @@ namespace SurveyAnalyticService.Controllers
     [FormatFilter]
     public class SurveyAnalyticController : ControllerBase
     {
+
+        private static string reqiredUser = "User";
+        private static string reqiredPassword = "Password";
+
         [HttpGet]
         public ActionResult Get()
         {
@@ -26,11 +30,16 @@ namespace SurveyAnalyticService.Controllers
 
             //var convValues = Newtonsoft.Json.JsonConvert.DeserializeObject(values);
 
-            var credentiaaaaals = new SurveyCredentials(values);
+            var credentials = new SurveyCredentials(values);
 
-            WriteLog(credentiaaaaals.User);
-            WriteLog(credentiaaaaals.Password);
-            return Ok();
+            var username = credentials.User;
+            var password = credentials.Password;
+
+            if (username.Equals(reqiredUser) && password.Equals(reqiredPassword))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         private async void WriteLog(string log)
