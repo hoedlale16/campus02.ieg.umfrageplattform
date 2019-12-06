@@ -141,6 +141,42 @@
 			]
 		},
 		{
+			"name": "Implementierung II - Secrets & Configuration",
+			"item": [
+				{
+					"name": "Create Key/Value direct (Consul)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\": \"Test\", \"password\": \"tttt\"}\n"
+						},
+						"url": {
+							"raw": "http://localhost:8500/v1/kv/SurveyAnalyticService",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"v1",
+								"kv",
+								"SurveyAnalyticService"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Write Log (SurveyMiscService",
 			"request": {
 				"method": "POST",
