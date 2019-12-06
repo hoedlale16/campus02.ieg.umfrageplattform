@@ -16,8 +16,8 @@ namespace SurveyAnalyticService.Controllers
     public class SurveyAnalyticController : ControllerBase
     {
 
-        private static string reqiredUser = "User";
-        private static string reqiredPassword = "Password";
+        private static string reqiredUser = "AnalyticUser";
+        private static string reqiredPassword = "TheSecretPassword";
 
         [HttpGet]
         public ActionResult Get()
@@ -27,9 +27,6 @@ namespace SurveyAnalyticService.Controllers
             StringValues values = "Empty";
             headers.TryGetValue("Credentials", out values);
 
-
-            //var convValues = Newtonsoft.Json.JsonConvert.DeserializeObject(values);
-
             var credentials = new SurveyCredentials(values);
 
             var username = credentials.User;
@@ -37,6 +34,7 @@ namespace SurveyAnalyticService.Controllers
 
             if (username.Equals(reqiredUser) && password.Equals(reqiredPassword))
             {
+                // Business logic
                 return Ok();
             }
             return BadRequest();

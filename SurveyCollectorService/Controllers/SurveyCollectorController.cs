@@ -39,9 +39,6 @@ namespace SurveyCollectorService.Controllers
                 {
                     return BadRequest("Not authenticated");
                 }
-
-
-                //return Ok(result);
             }
 
             return BadRequest();
@@ -93,7 +90,6 @@ namespace SurveyCollectorService.Controllers
                 HttpResponseMessage response = await _client.GetAsync("https://localhost:44329/api/SurveyAnalytic");
                 if (response.IsSuccessStatusCode)
                 {
-                    //result = response.Content.ReadAsStringAsync().Result;
                     result = "OK";
                 } else
                 {
