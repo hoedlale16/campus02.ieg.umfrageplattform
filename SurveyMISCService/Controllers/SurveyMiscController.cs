@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SurveyMiscService.Models;
 using SurveyMISCService.Model;
 using SurveyMISCService.Models;
 
@@ -19,10 +20,32 @@ namespace SurveyMISCService.Controllers
         private static readonly HttpClient _client = new HttpClient();
         private static string _consulURL = "http://localhost:8500";
 
-        private ILogger<SurveyMiscController> _logger;
+        private static ILogger<SurveyMiscController> _logger;
         public SurveyMiscController(ILogger<SurveyMiscController> logger)
         {
             _logger = logger;
+        }
+
+        static SurveyMiscController()
+        {
+            createCredentialsForSurveyAnalyticService();
+        }
+
+        private static void createCredentialsForSurveyAnalyticService()
+        {
+            _client.DefaultRequestHeaders.Accept.Clear();
+            var createKeyValueURL = "/v1/kv/SurveyAnalyticService";
+
+            HttpResponseMessage response = _client.PutAsJsonAsync(_consulURL + createKeyValueURL, new SurveyCredentials
+            {
+                User = "Test",
+                Password = "tttt"
+            }).Result;
+
+            if(! response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Initizialisation of CONSUL failed (Auth-Data for SurveyAnalyticService");
+            }
         }
 
         [HttpPost]
