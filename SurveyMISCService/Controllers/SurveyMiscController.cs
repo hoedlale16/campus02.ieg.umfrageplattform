@@ -38,8 +38,8 @@ namespace SurveyMISCService.Controllers
 
             HttpResponseMessage response = _client.PutAsJsonAsync(_consulURL + createKeyValueURL, new SurveyCredentials
             {
-                User = "Test",
-                Password = "tttt"
+                User = "AnalyticUser",
+                Password = "TheSecretPassword"
             }).Result;
 
             if(! response.IsSuccessStatusCode)
