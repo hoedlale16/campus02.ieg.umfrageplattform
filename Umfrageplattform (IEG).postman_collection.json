@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "79dd7046-7feb-4174-8752-6709a7fb4531",
+		"_postman_id": "1d1a468d-3c34-43eb-a69d-f23f54fe1ca6",
 		"name": "Umfrageplattform (IEG)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -19,10 +19,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44382/api/SurveyQuestion",
 							"protocol": "https",
@@ -43,10 +39,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://127.0.0.1:8500/v1/health/state/passing?filter=ServiceID==SurveyQuestionService",
 							"protocol": "http",
@@ -78,10 +70,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44332/api/SurveyMISC/SurveyQuestionService",
 							"protocol": "https",
@@ -138,7 +126,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Implementierung II - Secrets & Configuration",
@@ -173,8 +162,20 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Authenticated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Write Log (SurveyMiscService",
@@ -207,5 +208,6 @@
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
