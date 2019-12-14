@@ -24,8 +24,8 @@ namespace SurveyMiscService.Models
         public SurveyCredentials(String json)
         {
             JObject jObject = JObject.Parse(json);
-            User = (string)jObject["user"];
-            Password = (string)jObject["password"];
+            User = (string)jObject["User"];
+            Password = (string)jObject["Password"];
         }
     }
 }

@@ -114,7 +114,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:59434/api/SurveyForm?surveyName=Testumfrage&numOfQuestions=2",
+							"raw": "http://localhost:59434/api/SurveyForm?surveyName=Testumfrage&numOfQuestions=80",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -131,7 +131,7 @@
 								},
 								{
 									"key": "numOfQuestions",
-									"value": "2"
+									"value": "80"
 								}
 							]
 						}
@@ -156,7 +156,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"user\": \"Test\", \"password\": \"tttt\"}\n"
+							"raw": "{\"User\": \"AnalyticUser\", \"Password\": \"TheSecretPassword\"}\n"
 						},
 						"url": {
 							"raw": "http://localhost:8500/v1/kv/SurveyAnalyticService",
@@ -169,6 +169,100 @@
 								"v1",
 								"kv",
 								"SurveyAnalyticService"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Call AnalyticService directly (failure)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:50911/api/SurveyAnalytic",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "50911",
+							"path": [
+								"api",
+								"SurveyAnalytic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Credentials of Consul",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8500/v1/kv/SurveyAnalyticService",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8500",
+							"path": [
+								"v1",
+								"kv",
+								"SurveyAnalyticService"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Call Collector Service",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:50913/api/SurveyCollector",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "50913",
+							"path": [
+								"api",
+								"SurveyCollector"
 							]
 						}
 					},

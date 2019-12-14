@@ -52,8 +52,8 @@ namespace SurveyCollectorService.Controllers
             try
             {
                 _client.DefaultRequestHeaders.Accept.Clear();
-                var filterPassing = "/v1/kv/User";
-                // URL: http://127.0.0.1:8500/v1/kv/User
+                var filterPassing = "/v1/kv/SurveyAnalyticService";
+                // URL: http://127.0.0.1:8500/v1/kv/SurveyAnalyticService
                 HttpResponseMessage response = await _client.GetAsync(_consulURL + filterPassing);
                 if (response.IsSuccessStatusCode)
                 {
@@ -87,7 +87,7 @@ namespace SurveyCollectorService.Controllers
                 _client.DefaultRequestHeaders.Accept.Clear();
                 _client.DefaultRequestHeaders.Add("Credentials", credentials);
 
-                HttpResponseMessage response = await _client.GetAsync("https://localhost:44329/api/SurveyAnalytic");
+                HttpResponseMessage response = await _client.GetAsync("http://localhost:50911/api/SurveyAnalytic");
                 if (response.IsSuccessStatusCode)
                 {
                     result = "OK";
