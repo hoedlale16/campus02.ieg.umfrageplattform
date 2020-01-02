@@ -1,26 +1,39 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SurveyAnalyticService.Models;
-using WebhookService.Models;
-using Newtonsoft.Json.Linq;
 
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+
+
+//TODO change name to Hooker(s)
 namespace WebhookService.Controllers
 {
-    public class WebhookService
+    [Route("api/[controller]")]
+    [ApiController]
+    public class WebhookService : ControllerBase
     {
+        private string githubOAuthToken = "edac383b97cc2f6588924a053d3108070ccc228a";
         private string destinationUrl;
         private string endpointUrl;
         private readonly HttpClient client;
@@ -33,60 +46,78 @@ namespace WebhookService.Controllers
             this.client = new HttpClient();
         }
 
+        [HttpPost]
+        [Route("api/event")]
+        public ActionResult Receive([FromBody] string body)
+        {
+            Console.WriteLine("Received request!");
+            Console.WriteLine(body);
+            return new OkResult();
+
+        }
+
+        private async void ProcessEvent()
+        {
+            
+            
+        }
+
 
         public Webhook CreateWebhook(string name, bool active, ArrayList events, WebhookConfig config)
         {
             return new Webhook(name, active, events, config);
         }
+        
 
-        public void RegisterWebhooks(Webhook webhook)
+        public string RegisterWebhook(string destination, Webhook webhook)
         {
-            string jsonWebhook = ConvertToJsonString(webhook);
-            string responseBody = SendRequest(jsonWebhook);
+            string body = ConvertToJsonString(webhook);
+            
+            HttpContent content = new StringContent(body);
+            HttpClient cli = new HttpClient();
+            cli.DefaultRequestHeaders.UserAgent.TryParseAdd("c#app");
+            cli.DefaultRequestHeaders.Add("Authorization", "Bearer " + githubOAuthToken);
+            HttpResponseMessage response = cli.PostAsync(destination, content).Result; 
+            string message = response.Content.ReadAsStringAsync().Result;
 
-            if (responseBody == null)
+            if (response.IsSuccessStatusCode)
             {
-                //TODO log error                    
+                // Get the response
+                var responseString =  response.Content.ReadAsStringAsync();
+                Log("Webhook successfully registered!");
+                return responseString.Result;
             }
-            else
+            
+            if (response.StatusCode.Equals(HttpStatusCode.UnprocessableEntity))
             {
-            } //TODO log success
+                String errorMsg = "";
+                if (message.Contains("Hook already exists")) { errorMsg = "Webhook could not be created: Webhook already exists!"; }
+                else errorMsg = "Webhook could not be created: " + response.Content.ReadAsStringAsync().Result;
+                
+                Log(errorMsg);
+                
+            } 
+            
+            return null;
+            
         }
 
+        
         private string ConvertToJsonString(Webhook webhook)
         {
             string result = JsonConvert.SerializeObject(webhook);
             return result;
         }
-
-
-        private string SendRequest(string content)
+        
+        
+        private async void Log(string msg)
         {
-            // build request body
-            StringContent body = new StringContent(content, Encoding.UTF8, "application/json");
-
-            // declare request method and type
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(this.destinationUrl);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-
-            // add body to request
-            StreamWriter streamWriter = new StreamWriter(request.GetRequestStream());
-            streamWriter.Write(body);
-
-            // send request and get response
-            HttpWebResponse httpResponse = (HttpWebResponse) request.GetResponse();
-            HttpStatusCode status = httpResponse.StatusCode;
-            var responseStream = httpResponse.GetResponseStream();
-
-            // read response body
-            if (status == HttpStatusCode.OK && responseStream != null)
+            HttpClient cli = new HttpClient();
+            await cli.PostAsJsonAsync("https://localhost:44332/api/SurveyMISC/log", new LogEntry
             {
-                var streamReader = new StreamReader(responseStream);
-                return streamReader.ReadToEnd();
-            }
-
-            return null;
+                ServiceID = "WebhookServiceController",
+                LogText = msg
+            });
         }
     }
 }

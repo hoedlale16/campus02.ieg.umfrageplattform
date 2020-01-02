@@ -1,14 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SurveyAnalyticService.Models;
+
+using WebhookService.Controllers;
 
 namespace WebhookService
 {
@@ -19,15 +14,16 @@ namespace WebhookService
             
             Controllers.WebhookService webhookService = new Controllers.WebhookService("http://www.github.com/", "test.at/2");
             ArrayList eventList = new ArrayList();
-            eventList.Add("hallo");
-            eventList.Add("eliška");
+            eventList.Add("deployment");
             
-            WebhookConfig config = new WebhookConfig("test.at", "json", "secret",false);
-            Webhook webhook = webhookService.CreateWebhook("CaptainHook", true, eventList, config);
-            webhookService.RegisterWebhooks(webhook);
-            
+            WebhookConfig config = new WebhookConfig("http://ngrok.io", "json", "secret",false);
+            Webhook webhook = webhookService.CreateWebhook("web", true, eventList, config);
+
+            webhookService.RegisterWebhook("https://api.github.com/repos/MrPink1992/web/hooks", webhook);
+            Console.WriteLine("Webhook verification finished");
             
             CreateHostBuilder(args).Build().Run();
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
