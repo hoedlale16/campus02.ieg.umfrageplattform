@@ -27,6 +27,11 @@ namespace SurveyAnalyticService.Controllers
             StringValues values = "Empty";
             headers.TryGetValue("Credentials", out values);
 
+            if (String.IsNullOrEmpty(values)) { 
+                //No Credentioals 
+                return BadRequest("No Credentials given!");
+            }
+
             var credentials = new SurveyCredentials(values);
 
             var username = credentials.User;
