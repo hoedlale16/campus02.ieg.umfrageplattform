@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace WebhookService.Controllers
+namespace GithubWebhookService.Controllers
 {
     public class WebhookConfig
     {

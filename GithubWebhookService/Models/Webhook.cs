@@ -1,12 +1,12 @@
-using SurveyAnalyticService.Models;
-using WebhookService.Controllers;
 
-namespace WebhookService
+using GithubWebhookService.Controllers;
+
+namespace GithubWebhookService.Models
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using WebhookService;
+    using GithubWebhookService;
 
 
     public class Webhook

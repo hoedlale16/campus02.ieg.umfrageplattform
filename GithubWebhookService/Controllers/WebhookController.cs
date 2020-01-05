@@ -1,22 +1,33 @@
-﻿using System;
+﻿using GithubWebhookService.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SurveyAnalyticService.Models;
-using WebhookService.Models;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using static Microsoft.AspNetCore.WebSockets.Internal.Constants;
+using Microsoft.Extensions.Primitives;
+using System.IO;
 
-namespace WebhookService.Controllers
+namespace GithubWebhookService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/WebhookController")]
     [ApiController]
-    public class WebhookService : ControllerBase
+    public class WebhookController : ControllerBase
     {
-        private string repository = "campus02.ieg.umfrageplattform";
+
+        //private string repository = "campus02.ieg.umfrageplattform";
+        private string repository = "web";
+
+        private string repoOwner = "MrPink1992";
+        //private string repoOwner = "hoedlale16";
         private string githubOAuthToken = "edac383b97cc2f6588924a053d3108070ccc228a";
         private string secret = "secret";
         private string destinationUrl;
@@ -24,65 +35,98 @@ namespace WebhookService.Controllers
         private readonly HttpClient client;
 
 
-        public WebhookService(string destinationUrl, string endpointUrl)
+        public WebhookController(string destinationUrl = "https://github.com" , string endpointUrl = "http://ngrok.io")
         {
             this.destinationUrl = destinationUrl;
             this.endpointUrl = endpointUrl;
             this.client = new HttpClient();
         }
 
-        [HttpPost]
-        [Route("api/event")]
-        public ActionResult Receive([FromBody] string body)
-        {
-            string hmac = ""; // get X-Hub-Signature
-            string calculatedHmac = CalculateHmac(body);
 
-            if (!hmac.Equals(calculatedHmac))
+      
+
+        [HttpPost]
+        [Route("event")]
+        public ActionResult Receive([FromBody] WebhookPushEvent _event)
+        {
+            StringValues signature;
+
+            try
             {
-                Log("Invalid webhook received: Signature does not match!");
-                return BadRequest();
+                bool signatureExists = Request.Headers.TryGetValue("X-Hub-Signature", out signature);
+
+                if (!signatureExists)
+                {
+                    throw new ArgumentNullException();
+                }
+
+            }
+            catch (ArgumentNullException ex)
+            {
+                //Log("Could not verify integrity of received webhook! " + ex);
+                Debug.WriteLine("Missing Siugnature!");
+                return NotFound();
             }
 
+            //Read body as string to calculate and verify signature
+            StreamReader reader = new StreamReader(Request.Body);
+            string body = reader.ReadToEnd();
 
-            ProcessEvent(body);
+            string calculatedHmac = CalculateHmac(body);
 
+            signature = signature.ToString().Replace("{", "").Replace("}", "");
 
-            return new OkResult();
+            if (!signature.ToString().Equals(calculatedHmac))
+            {
+                //Log("Webhook could not be verified - returning 404");
+                Debug.WriteLine("Webhook could not be verified - returning 404");
+                return NotFound();
+            }
+
+            ProcessEvent(_event);
+
+            return Ok();
+
         }
 
 
-        private void ProcessEvent(string content)
-        {
-            var pushEvent = WebhookPushEvent.FromJson(content);
-            if (pushEvent == null)
-            {
-                Log("Cannot parse Event: Empty Request Body");
-                return;
-            }
 
-            Pusher pusher = pushEvent.Pusher;
+        private void ProcessEvent(WebhookPushEvent _event)
+        {
+            
+
+            Pusher pusher = _event.Pusher;
             string name = pusher.Name;
 
-            Log("Webhook received: New Push from " + name);
+            //Log("Webhook received: New Push from " + name);
+            string commitSha = _event.HeadCommit; 
+            GithubCommit commit = FetchCommit(commitSha);
+            if(commit == null) { return; }
 
-            string referecnce = pushEvent.Ref;
-            GithubCommit commit = FetchCommit(referecnce);
-            File[] changedFiles = commit.Files;
-            
-            foreach (File changedFile in changedFiles)
+            GithubWebhookService.Models.File[] changedFiles = commit.Files;
+
+            foreach (GithubWebhookService.Models.File changedFile in changedFiles)
             {
                 string filename = changedFile.Filename;
                 if (filename.Equals("surveyQuestionService.json"))
                 {
-                    Log("Changes to Consul-Configuration have been detected!");
+
+                    //Log("Changes to Consul-Configuration have been detected!");
+                    Console.WriteLine("Changes to Consul-Configuration have been detected!");
                 }
             }
         }
 
         private GithubCommit FetchCommit(string _ref)
         {
-            string destination = "https://api.github.com/repos/" + repository + "/commits/" + _ref;
+            if(_ref == null)
+            {
+                Log("Unable to fetch commit: Head - Reference was null");
+                Debug.WriteLine("Unable to fetch commit: Head-Reference was null");
+                return null;
+            }
+
+            string destination = "https://api.github.com/repos/" + repoOwner + "/" + repository + "/commits/" + _ref;
             HttpClient cli = new HttpClient();
             cli.DefaultRequestHeaders.UserAgent.TryParseAdd("c#app");
             cli.DefaultRequestHeaders.Add("Authorization", "Bearer " + githubOAuthToken);
@@ -93,16 +137,16 @@ namespace WebhookService.Controllers
                 string body = response.Content.ReadAsStringAsync().Result;
                 return GithubCommit.FromJson(body);
             }
-            
-            Log("Unable to parse github push event: Commit could not be fetched!");
+
+            //Log("Unable to parse github push event: Commit could not be fetched!");
+            Debug.WriteLine("Unable to parse github push event: Commit could not be fetched!");
             return null;
         }
 
-
-        public Webhook CreateWebhook(string name, bool active, ArrayList events, WebhookConfig config)
-        {
-            return new Webhook(name, active, events, config);
-        }
+        //public Webhook CreateWebhook(string name, bool active, ArrayList events, WebhookConfig config)
+        //{
+        //    return new Webhook(name, active, events, config);
+        //}
 
 
         public string RegisterWebhook(string destination, Webhook webhook)
@@ -120,7 +164,8 @@ namespace WebhookService.Controllers
             {
                 // Get the response
                 var responseString = response.Content.ReadAsStringAsync();
-                Log("Webhook successfully registered!");
+                //Log("Webhook successfully registered!");
+                Debug.WriteLine("Webhook successfully registered!");
                 return responseString.Result;
             }
 
@@ -133,7 +178,8 @@ namespace WebhookService.Controllers
                 }
                 else errorMsg = "Webhook could not be created: " + response.Content.ReadAsStringAsync().Result;
 
-                Log(errorMsg);
+                //Log(errorMsg);
+                Debug.WriteLine(errorMsg);
             }
 
             return null;
@@ -199,5 +245,7 @@ namespace WebhookService.Controllers
                 LogText = msg
             });
         }
+
+
     }
 }

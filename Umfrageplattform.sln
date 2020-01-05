@@ -9,11 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyMISCService", "Survey
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyQuestionService", "SurveyQuestionService\SurveyQuestionService.csproj", "{8F23A32D-24D7-410F-A4B8-6830FBBD28ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyCollectorService", "SurveyCollectorService\SurveyCollectorService.csproj", "{92002E42-5FCD-4788-AC64-CF8BA7116A8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyCollectorService", "SurveyCollectorService\SurveyCollectorService.csproj", "{92002E42-5FCD-4788-AC64-CF8BA7116A8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurveyAnalyticService", "SurveyAnalyticService\SurveyAnalyticService.csproj", "{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurveyAnalyticService", "SurveyAnalyticService\SurveyAnalyticService.csproj", "{FF210647-3C02-4A14-8FFA-A091C3BAFBD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookService", "WebhookService\WebhookService.csproj", "{74865C10-FE00-4E47-B646-AF2C3A9A77BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookService", "WebhookService\WebhookService.csproj", "{74865C10-FE00-4E47-B646-AF2C3A9A77BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GithubWebhookService", "GithubWebhookService\GithubWebhookService.csproj", "{5AE57B82-13FC-42F8-83D8-4DE6AD750052}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74865C10-FE00-4E47-B646-AF2C3A9A77BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AE57B82-13FC-42F8-83D8-4DE6AD750052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AE57B82-13FC-42F8-83D8-4DE6AD750052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AE57B82-13FC-42F8-83D8-4DE6AD750052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AE57B82-13FC-42F8-83D8-4DE6AD750052}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

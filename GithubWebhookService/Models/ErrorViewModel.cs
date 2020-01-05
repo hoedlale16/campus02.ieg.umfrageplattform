@@ -1,6 +1,6 @@
 using System;
 
-namespace WebhookService.Models
+namespace GithubWebhookService.Models
 {
     public class ErrorViewModel
     {
