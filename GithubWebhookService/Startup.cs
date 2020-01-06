@@ -50,9 +50,6 @@ namespace GithubWebhookService
             app.UseMvc();
             init();
 
-
-
-
         }
 
         public void init()
@@ -60,17 +57,17 @@ namespace GithubWebhookService
 
             Debug.WriteLine("Starting Application...");
 
-            WebhookController webhookService = new Controllers.WebhookController("http://www.github.com/", "test.at/2");
+            WebhookController webhookService = new Controllers.WebhookController();
             ArrayList eventList = new ArrayList();
             eventList.Add("deployment");
 
-            WebhookConfig config = new WebhookConfig("http://ngrok.io", "json", "secret", false);
+            WebhookConfig config = new WebhookConfig("https://cd4dc1d6.ngrok.io/api/WebhookController/event", "json", "secret", false);
             //Webhook webhook = webhookService.CreateWebhook("web", true, eventList, config);
             Webhook webhook = new Webhook("web", true, eventList, config);
 
             Debug.WriteLine("Trying to register Webhook...");
-            //webhookService.RegisterWebhook("https://api.github.com/repos/hoedlale16/campus02.ieg.umfrageplattform/hooks", webhook);
-            webhookService.RegisterWebhook("https://api.github.com/repos/MrPink1992/web/hooks", webhook);
+            webhookService.RegisterWebhook("https://api.github.com/repos/hoedlale16/campus02.ieg.umfrageplattform/hooks", webhook);
+            //webhookService.RegisterWebhook("https://api.github.com/repos/MrPink1992/web/hooks", webhook);
             Debug.WriteLine("Webhook registration finished");
 
         }

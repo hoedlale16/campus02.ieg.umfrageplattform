@@ -23,23 +23,17 @@ namespace GithubWebhookService.Controllers
     public class WebhookController : ControllerBase
     {
 
-        //private string repository = "campus02.ieg.umfrageplattform";
-        private string repository = "web";
+        private string repository = "campus02.ieg.umfrageplattform";
+        // private string repository = "web";
 
-        private string repoOwner = "MrPink1992";
-        //private string repoOwner = "hoedlale16";
-        private string githubOAuthToken = "edac383b97cc2f6588924a053d3108070ccc228a";
+        // private string repoOwner = "MrPink1992";
+        private string repoOwner = "hoedlale16";
+        private string githubOAuthToken = "95b06ea64a4ff5739e5f10cd1490a51640289e9f";
         private string secret = "secret";
-        private string destinationUrl;
-        private string endpointUrl;
-        private readonly HttpClient client;
 
 
-        public WebhookController(string destinationUrl = "https://github.com" , string endpointUrl = "http://ngrok.io")
+        public WebhookController()
         {
-            this.destinationUrl = destinationUrl;
-            this.endpointUrl = endpointUrl;
-            this.client = new HttpClient();
         }
 
 
@@ -50,7 +44,8 @@ namespace GithubWebhookService.Controllers
         public ActionResult Receive([FromBody] WebhookPushEvent _event)
         {
             StringValues signature;
-
+            string stringContent = _event.ToJson();
+            
             try
             {
                 bool signatureExists = Request.Headers.TryGetValue("X-Hub-Signature", out signature);
@@ -69,11 +64,11 @@ namespace GithubWebhookService.Controllers
             }
 
             //Read body as string to calculate and verify signature
-            StreamReader reader = new StreamReader(Request.Body);
-            string body = reader.ReadToEnd();
+            //StreamReader reader = new StreamReader(Request.Body);
+            //string body = reader.ReadToEnd();
 
-            string calculatedHmac = CalculateHmac(body);
-
+            string calculatedHmac = CalculateHmac(stringContent);
+            
             signature = signature.ToString().Replace("{", "").Replace("}", "");
 
             if (!signature.ToString().Equals(calculatedHmac))
