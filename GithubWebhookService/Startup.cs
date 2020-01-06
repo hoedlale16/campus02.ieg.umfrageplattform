@@ -48,7 +48,7 @@ namespace GithubWebhookService
 
             app.UseHttpsRedirection();
             app.UseMvc();
-            init();
+            //init();
 
         }
 

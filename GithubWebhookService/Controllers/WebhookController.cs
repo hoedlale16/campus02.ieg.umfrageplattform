@@ -89,7 +89,7 @@ namespace GithubWebhookService.Controllers
             foreach (GithubWebhookService.Models.File changedFile in changedFiles)
             {
                 string filename = changedFile.Filename;
-                if (filename.Equals("surveyQuestionService.json"))
+                if (filename.Contains("surveyQuestionService.json"))
                 {
 
                     Log("Changes to Consul-Configuration have been detected!");
