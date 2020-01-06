@@ -24,20 +24,10 @@ namespace GithubWebhookService.Controllers
     {
 
         private string repository = "campus02.ieg.umfrageplattform";
-        // private string repository = "web";
-
-        // private string repoOwner = "MrPink1992";
         private string repoOwner = "hoedlale16";
         private string githubOAuthToken = "95b06ea64a4ff5739e5f10cd1490a51640289e9f";
         private string secret = "secret";
-
-
-        public WebhookController()
-        {
-        }
-
-
-      
+        
 
         [HttpPost]
         [Route("event")]
@@ -58,14 +48,10 @@ namespace GithubWebhookService.Controllers
             }
             catch (ArgumentNullException ex)
             {
-                //Log("Could not verify integrity of received webhook! " + ex);
-                Debug.WriteLine("Missing Siugnature!");
+                Log("Could not verify integrity of received webhook! " + ex);
+                //Console.WriteLine("Missing Siugnature!");
                 return NotFound();
             }
-
-            //Read body as string to calculate and verify signature
-            //StreamReader reader = new StreamReader(Request.Body);
-            //string body = reader.ReadToEnd();
 
             string calculatedHmac = CalculateHmac(stringContent);
             
@@ -73,8 +59,8 @@ namespace GithubWebhookService.Controllers
 
             if (!signature.ToString().Equals(calculatedHmac))
             {
-                //Log("Webhook could not be verified - returning 404");
-                Debug.WriteLine("Webhook could not be verified - returning 404");
+                Log("Webhook could not be verified - returning 404");
+                //Console.WriteLine("Webhook could not be verified - returning 404");
                 return NotFound();
             }
 
@@ -93,7 +79,7 @@ namespace GithubWebhookService.Controllers
             Pusher pusher = _event.Pusher;
             string name = pusher.Name;
 
-            //Log("Webhook received: New Push from " + name);
+            Log("Webhook received: New Push from " + name);
             string commitSha = _event.HeadCommit; 
             GithubCommit commit = FetchCommit(commitSha);
             if(commit == null) { return; }
@@ -106,7 +92,7 @@ namespace GithubWebhookService.Controllers
                 if (filename.Equals("surveyQuestionService.json"))
                 {
 
-                    //Log("Changes to Consul-Configuration have been detected!");
+                    Log("Changes to Consul-Configuration have been detected!");
                     Console.WriteLine("Changes to Consul-Configuration have been detected!");
                 }
             }
@@ -117,7 +103,7 @@ namespace GithubWebhookService.Controllers
             if(_ref == null)
             {
                 Log("Unable to fetch commit: Head - Reference was null");
-                Debug.WriteLine("Unable to fetch commit: Head-Reference was null");
+                Console.WriteLine("Unable to fetch commit: Head-Reference was null");
                 return null;
             }
 
@@ -133,15 +119,11 @@ namespace GithubWebhookService.Controllers
                 return GithubCommit.FromJson(body);
             }
 
-            //Log("Unable to parse github push event: Commit could not be fetched!");
-            Debug.WriteLine("Unable to parse github push event: Commit could not be fetched!");
+            Log("Unable to parse github push event: Commit could not be fetched!");
+            //Console.WriteLine("Unable to parse github push event: Commit could not be fetched!");
             return null;
         }
-
-        //public Webhook CreateWebhook(string name, bool active, ArrayList events, WebhookConfig config)
-        //{
-        //    return new Webhook(name, active, events, config);
-        //}
+        
 
 
         public string RegisterWebhook(string destination, Webhook webhook)
@@ -159,8 +141,8 @@ namespace GithubWebhookService.Controllers
             {
                 // Get the response
                 var responseString = response.Content.ReadAsStringAsync();
-                //Log("Webhook successfully registered!");
-                Debug.WriteLine("Webhook successfully registered!");
+                Log("Webhook successfully registered!");
+                //Console.WriteLine("Webhook successfully registered!");
                 return responseString.Result;
             }
 
@@ -173,8 +155,8 @@ namespace GithubWebhookService.Controllers
                 }
                 else errorMsg = "Webhook could not be created: " + response.Content.ReadAsStringAsync().Result;
 
-                //Log(errorMsg);
-                Debug.WriteLine(errorMsg);
+                Log(errorMsg);
+                Console.WriteLine(errorMsg);
             }
 
             return null;
@@ -231,7 +213,7 @@ namespace GithubWebhookService.Controllers
             return builder.ToString();
         }
 
-        private async void Log(string msg)
+        public async void Log(string msg)
         {
             HttpClient cli = new HttpClient();
             await cli.PostAsJsonAsync("https://localhost:44332/api/SurveyMISC/log", new LogEntry
